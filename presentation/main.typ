@@ -96,7 +96,7 @@
 
 == Метрики качества
 === FID
-`FID` (Fréchet Inception Distance) оценивает сходство между изображениями путем оценивания их статистических признаков в признаковом пространстве.
+`FID` (Fréchet Inception Distance) оценивает сходство между изображениями путем оценивания их статистических признаков в признаковом пространстве:
 $ 
 F I D(mu_r, Sigma_r, mu_g, Sigma_g) = ||mu_r - mu_g||_2^2 + "Tr"(Sigma_r + Sigma_g - 2(Sigma_r Sigma_g)^(1/2)) 
 $
@@ -117,7 +117,7 @@ $
 == Подсчёт метрик: LPIPS
 #figure(image("images/lpips_results.png", width:100%, height: 300pt))
 
-#heading(outlined: false)[Спасибо за внимание.]
-
 == Список использованных источников
 #bibliography(full: true, style: "gost-r-705-2008-numeric","thesis.bib")
+
+#heading(outlined: false)[Спасибо за внимание.]
