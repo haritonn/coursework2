@@ -1,0 +1,88 @@
+\section{Вычисление \texttt{LPIPS}}\label{app:lpips}
+Требуемое содержимое корня:
+\begin{verbatim}
+    computing_metrics/
+    |--GAN/
+    |--LADI/
+    |--PROMPT/
+    |--image/
+    |--compute_lpips.py
+\end{verbatim}
+Содержимое файла \texttt{compute\_lpips.py}:
+\begin{minted}[fontsize=\small, breaklines=true, style=bw, linenos]{python}
+import lpips
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+import os
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+# Инициализация LPIPS
+loss_fn = lpips.LPIPS(net='alex').to(device)
+
+def load_image(path):
+    img = Image.open(path).convert('RGB')
+    img = img.resize((256, 256))  
+    img_tensor = torch.from_numpy(np.array(img)).permute(2,0,1).float() / 255.0
+    img_tensor = img_tensor.unsqueeze(0) * 2 - 1 
+    return img_tensor
+
+def calculate_lpips(source_folder, result_folder, source_files, result_files):
+    scores = []
+    
+    for src, res in zip(source_files, result_files):
+        if src.split('.')[0] == res.split('.')[0]:
+            src_path = os.path.join(source_folder, src)
+            res_path = os.path.join(result_folder, res)
+
+            img1 = load_image(src_path).to(device)
+            img2 = load_image(res_path).to(device)
+
+            with torch.no_grad():
+                dist = loss_fn(img1, img2)
+            scores.append(dist.item())
+    return scores
+
+#Обозначение необходимой информации: папки, список файлов, словари для хранения значений метрик
+gan_folder = "GAN/"
+ladi_folder = "LADI/"
+prompt_folder = "PROMPT/"
+source_folder = "image/"
+
+ladi_files = [f for f in os.listdir(ladi_folder) if f.lower().endswith(".jpg")]
+prompt_files = [f for f in os.listdir(prompt_folder) if f.lower().endswith(".jpg")]
+source_files = [f for f in os.listdir(source_folder) if f.lower().endswith(".jpg")]
+gan_files = [f for f in os.listdir(gan_folder) if f.lower().endswith(".png")]
+
+#Подсчёт метрик для каждой модели
+gan_scores = calculate_lpips(source_folder, gan_folder, source_files, gan_files)
+ladi_scores = calculate_lpips(source_folder, ladi_folder, source_files, ladi_files)
+prompt_scores = calculate_lpips(source_folder, prompt_folder, source_files, prompt_files)
+
+#Вывод среднего значения для каждой модели
+mean_score = [np.mean(gan_scores), np.mean(ladi_scores), np.mean(prompt_scores)]
+models = ['pasta-gan++', 'ladi-viton', 'promptdresser']
+
+for model, score in zip(models, mean_score):
+    print(f"Средний LPIPS для {model}: {score:.4f}")
+
+#Настройка графика (BarPlot)
+plt.figure(figsize=(10, 8))
+bars = plt.bar(models, mean_score, color=['skyblue', 'lightgreen', 'tomato'])
+plt.ylim(0, max(mean_score)*1.1)
+
+plt.ylabel('Средний LPIPS')
+plt.title('Результаты подсчёта LPIPS для моделей')
+plt.grid(axis='y', alpha=.6)
+
+#Добавление значений на график
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2, yval + 0.01, f"{yval:.4f}", ha='center', va='bottom')
+
+#Отображение графика, его сохранение
+plt.show()
+plt.savefig("lpips_results.png")
+\end{minted}
