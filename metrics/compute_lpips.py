@@ -1,3 +1,14 @@
+"""
+About:
+Файл для подсчёта метрики LPIPS (Learned Perceptual Image Patch Similarity). Вместе с файлом, в корне должны находиться папки image, GAN, LADI, PROMPT, где 
+
+image - исходные изображения
+GAN - выходы модели PASTA-GAN++
+LADI - выходы модели LaDI-VITON
+PROMPT - выходы модели PromptDresser
+
+Результирующий barplot будет сохранён в корне, с названием lpips_results.png
+"""
 import lpips
 import torch
 import matplotlib.pyplot as plt
