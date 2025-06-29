@@ -1,3 +1,14 @@
+"""
+About:
+Файл для подсчёта метрики FID (Fréchet Inception Distance). Вместе с файлом, в корне должны находиться папки image, GAN, LADI, PROMPT, где 
+
+image - исходные изображения
+GAN - выходы модели PASTA-GAN++
+LADI - выходы модели LaDI-VITON
+PROMPT - выходы модели PromptDresser
+
+Результирующий barplot будет сохранён в корне, с названием fid_results.png
+"""
 import os
 import numpy as np
 from PIL import Image
