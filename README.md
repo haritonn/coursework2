@@ -16,3 +16,6 @@ PASTA-GAN++: [Проект](https://github.com/xiezhy6/PASTA-GAN-plusplus) | [С
 LaDI-VITON: [Проект](https://github.com/miccunifi/ladi-vton?tab=readme-ov-file) | [Статья (arXiv)](https://arxiv.org/abs/2305.13501)
 
 PromptDresser: [Проект](https://github.com/rlawjdghek/PromptDresser) | [Статья (arXiv)](https://arxiv.org/abs/2412.16978)
+
+### Credits
+Отдельное спасибо Вадиму и Ване за то, что предоставили необходимые вычислительные ресурсы для запуска некоторых решений <3.
